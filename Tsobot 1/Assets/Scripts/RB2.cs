@@ -180,21 +180,29 @@ public class RB2 : MonoBehaviour
                         Batonnets.gethowmany = 3;
                         break;
                     case "Bouton bleu":
-                        btc.emicolor(1);
                         btc.dropball(1);
+                        hit.transform.GetComponent<ButtonPressednorm>().press();
                         break;
                     case "Bouton violet":
-                        btc.emicolor(2);
                         btc.dropball(2);
+                        hit.transform.GetComponent<ButtonPressednorm>().press();
                         break;
                     case "Bouton vert":
-                        btc.emicolor(3);
                         btc.dropball(3);
+                        hit.transform.GetComponent<ButtonPressednorm>().press();
                         break;
 
                     case "Bouton rouge":
-                        btc.emicolor(4);
                         btc.dropball(4);
+                        hit.transform.GetComponent<ButtonPressednorm>().press();
+                        break;
+                    case "BoutonRed":
+                        print("buttoaz");
+                        hit.transform.GetComponent<ButtonPressed>().press();
+                        print("buttoaz");
+                        break;
+                    case "BoutonBleu":
+                        hit.transform.GetComponent<ButtonPressed>().press();
                         break;
 
                 }

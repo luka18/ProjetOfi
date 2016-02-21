@@ -18,15 +18,22 @@ public class ButtonsColor : MonoBehaviour {
     [SerializeField] GameObject redball;
 
     [SerializeField] GameObject refe;
-
+    [SerializeField] GameObject button;
 
 
 
     [SerializeField] GameObject portsin;
     [SerializeField] GameObject portsout;
 
-    int currentcolor =4;
+    [SerializeField] GameObject unsolved;
 
+     int currentcolor =1;
+
+    private float wait;
+    public void end()
+    {
+        button.SetActive(true);
+    }
 
 
     public void emicolor(int color)
@@ -34,46 +41,60 @@ public class ButtonsColor : MonoBehaviour {
         switch (color)
         {
             case 1: //bleu
+                
                 transform.GetChild(0).GetComponent<MeshRenderer>().material = bluemi;
                 break;
-            case 2: 
-                transform.GetChild(1).GetComponent<MeshRenderer>().material = vioemi;
+            case 2:
+                if (currentcolor > 1)
+                    print("golol ?");
+                    transform.GetChild(1).GetComponent<MeshRenderer>().material = vioemi;
                 break;
             case 3: 
-                transform.GetChild(2).GetComponent<MeshRenderer>().material = greemi;
+                if(currentcolor >2)
+                    transform.GetChild(2).GetComponent<MeshRenderer>().material = greemi;
                 break;
             case 4:
-                transform.GetChild(3).GetComponent<MeshRenderer>().material = redemi;
+                if(currentcolor>3)
+                    transform.GetChild(3).GetComponent<MeshRenderer>().material = redemi;
                 break;
 
         }
     }
-    public void defcolor(int color)
+    public void defcolor()
     {
-        switch (color)
+      
+        switch (currentcolor)
         {
             case 1:
                 transform.GetChild(0).GetComponent<MeshRenderer>().material = bludef;
                 break;
-            case 2: 
+            case 2:
                 transform.GetChild(1).GetComponent<MeshRenderer>().material = viodef;
                 break;
-            case 3: 
+            case 3:
                 transform.GetChild(2).GetComponent<MeshRenderer>().material = gredef;
                 break;
-            case 4: 
+            case 4:
                 transform.GetChild(3).GetComponent<MeshRenderer>().material = reddef;
                 break;
         }
+           
     }
 
     public void NextLevel()
     {
         portsin.transform.GetChild(currentcolor -1).gameObject.SetActive(false);
         portsout.transform.GetChild(currentcolor  -1).gameObject.SetActive(false);
+        unsolved.transform.GetChild(currentcolor - 1).gameObject.SetActive(false);
+        defcolor();
         currentcolor += 1;
         portsin.transform.GetChild(currentcolor-1).gameObject.SetActive(true);
         portsout.transform.GetChild(currentcolor-1).gameObject.SetActive(true);
+        print("current: " + currentcolor);
+        emicolor(currentcolor);
+        unsolved.transform.GetChild(currentcolor - 1).gameObject.SetActive(true);
+
+
 
     }
 
@@ -81,23 +102,27 @@ public class ButtonsColor : MonoBehaviour {
     {
         if (currentcolor == num)
         {
-            switch (num)
+            if (Time.time > wait)
             {
-                case 1:
-                    Instantiate(bluball, new Vector3(10, 19, 47.5f), new Quaternion());
-                    break;
-                case 2:
-                    ((GameObject) Instantiate(purpleball, new Vector3(20, 18.5f, 33.5f), new Quaternion())).GetComponent<Rigidbody>().AddForce(0, 0, 15, ForceMode.VelocityChange);
-                    break;
-                case 3:
-                    Instantiate(greenball, new Vector3(22.6f, 19.5f, 58), new Quaternion());
-                    break;
-                case 4:
-                    ((GameObject)Instantiate(redball, refe.transform.position, new Quaternion())).GetComponent<Rigidbody>().AddForce(7, 0, 0, ForceMode.VelocityChange);
-                    break;
+                switch (num)
+                {
+                    case 1:
+                        Instantiate(bluball, new Vector3(10, 19, 47.5f), new Quaternion());
+                        break;
+                    case 2:
+                        ((GameObject) Instantiate(purpleball, new Vector3(20, 18.5f, 33.5f), new Quaternion())).GetComponent<Rigidbody>().AddForce(0, 0, 15, ForceMode.VelocityChange);
+                        break;
+                    case 3:
+                        Instantiate(greenball, new Vector3(22.6f, 19.5f, 58), new Quaternion());
+                        break;
+                    case 4:
+                        ((GameObject)Instantiate(redball, refe.transform.position, new Quaternion())).GetComponent<Rigidbody>().AddForce(7, 0, 0, ForceMode.VelocityChange);
+                        break;
 
-            }
+                }
+            wait = Time.time + 3;
         }
+    }
 
 
     }

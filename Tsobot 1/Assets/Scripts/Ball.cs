@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Ball : MonoBehaviour {
 
-
     void OnCollisionEnter(Collision col)
     {
         print(col.transform.name);
@@ -13,7 +12,8 @@ public class Ball : MonoBehaviour {
         }
         else
         {
-            Destroy(this.gameObject);
+            
+            Destroy(gameObject);
         }
         
     }

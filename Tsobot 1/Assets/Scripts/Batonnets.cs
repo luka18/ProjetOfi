@@ -12,6 +12,8 @@ public class Batonnets : MonoBehaviour {
     private int i = 0;
     private float wait = 0;
     private bool stop = true;
+
+    [SerializeField] GameObject button;
     
 
 	// Use this for initialization
@@ -25,7 +27,9 @@ public class Batonnets : MonoBehaviour {
             {
                 for (int i = 0; i < howmany; i++)
                 {
+                    print("le i : " + i);
                     MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
+
                     render.material = blu;
                     advanced++;
                     print("add: "+advanced);
@@ -36,6 +40,8 @@ public class Batonnets : MonoBehaviour {
                     print("win");
                     howmany = 0;
                     stop = false;
+                    button.SetActive(true);
+
 
                 }
                 if (advanced >= 7)// lose 
@@ -76,6 +82,7 @@ public class Batonnets : MonoBehaviour {
                 for(int k = 0; k<10; k++)
                 {
                     transform.GetChild(k).GetComponent<MeshRenderer>().material = grey;
+                    advanced = 0;
                 }
             }
         }
