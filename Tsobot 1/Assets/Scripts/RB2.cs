@@ -41,7 +41,6 @@ public class RB2 : MonoBehaviour
     private bool goinup = false;
     private float timetogoup = 0;
     //scripts
-    public ButtonsColor btc;
     public HeadTtrigger ht;
 
     //Animation
@@ -158,61 +157,6 @@ public class RB2 : MonoBehaviour
                 slowdown = false;
            
         }
-
-       
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log("draw");
-            RaycastHit hit;
-            Debug.DrawRay(transform.position + new Vector3(0, 2.0f, 0), cam.transform.forward*3, Color.black, 1.0f);
-            if ((Physics.Raycast(transform.position + new Vector3(0, 2.0f, 0), cam.transform.forward, out hit,3.0f)))
-            {
-                switch(hit.transform.name)
-                {
-                    case "1Batton":
-                        Batonnets.gethowmany = 1;
-                        break;
-                    case "2Batton":
-                        Batonnets.gethowmany = 2;
-                        break;
-                    case "3Batton":
-                        Batonnets.gethowmany = 3;
-                        break;
-                    case "Bouton bleu":
-                        btc.dropball(1);
-                        hit.transform.GetComponent<ButtonPressednorm>().press();
-                        break;
-                    case "Bouton violet":
-                        btc.dropball(2);
-                        hit.transform.GetComponent<ButtonPressednorm>().press();
-                        break;
-                    case "Bouton vert":
-                        btc.dropball(3);
-                        hit.transform.GetComponent<ButtonPressednorm>().press();
-                        break;
-
-                    case "Bouton rouge":
-                        btc.dropball(4);
-                        hit.transform.GetComponent<ButtonPressednorm>().press();
-                        break;
-                    case "BoutonRed":
-                        print("buttoaz");
-                        hit.transform.GetComponent<ButtonPressed>().press();
-                        print("buttoaz");
-                        break;
-                    case "BoutonBleu":
-                        hit.transform.GetComponent<ButtonPressed>().press();
-                        break;
-
-                }
-
-
-            }
-            
-
-        }
-
 
         // les variable à update chaque frame
 
