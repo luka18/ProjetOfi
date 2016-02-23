@@ -26,7 +26,7 @@ public class PlayerSetup : NetworkBehaviour {
         else
         {
             print("inst local player");
-            sceneCamera = GameObject.Find("FirstView").GetComponent<Camera>();
+            sceneCamera = Camera.main;
             print(sceneCamera);
             if (sceneCamera!=null)
             {
@@ -36,10 +36,11 @@ public class PlayerSetup : NetworkBehaviour {
 
     }
 
-    void OnDisable()
+    /*void OnDisable()
     {
+        sceneCamera = Camera.main;
         print("OnDisable");
         sceneCamera.gameObject.SetActive(true);
-    }
+    }*/
 
 }

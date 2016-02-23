@@ -1,15 +1,80 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class RayCastDetect : MonoBehaviour {
+public class RayCastDetect : NetworkBehaviour {
     private Transform cam;
+    [SyncVar]
+    private NetworkIdentity objNetId;
+
+    public ButtonsColor btc;
 
     void Start()
     {
         cam = transform.FindChild("Camera");
     }
+    //------------------------------------------RPC-----------------------------------------
+    [ClientRpc]
+    void RpcDrop(GameObject obj, int typeball)
+    {
+        obj.GetComponentInParent<ButtonsColor>().dropball(typeball);
+    }
 
-    public ButtonsColor btc;
+    [ClientRpc]
+    void RpcPressOnce(GameObject obj)
+    {
+        obj.GetComponent<ButtonPressedOnce>().press();
+    }
+
+    [ClientRpc]
+    void RpcPress(GameObject obj)
+    {
+        obj.GetComponent<ButtonPressed>().press();
+    }
+    [ClientRpc]
+    void RpcBaton(GameObject obj, int i)
+    {
+        obj.transform.GetComponentInParent<Batonnets>().Plays(i);
+    }
+    [ClientRpc]
+    void RpcWaves(GameObject obj)
+    {
+        obj.GetComponent<StartWaves>().go();
+    }
+    // ----------------------------------------------------- COMMAND---------------------------------------------
+    [Command]
+    void CmdPress(GameObject obj, int k)
+    {
+        objNetId = obj.GetComponent<NetworkIdentity>();
+        objNetId.AssignClientAuthority(connectionToClient);
+        switch (k)
+        {
+            case 1:
+                RpcPressOnce(obj);
+                break;
+            case 2:
+                RpcPress(obj);
+                break;
+        }
+        objNetId.RemoveClientAuthority(connectionToClient);
+    }
+    [Command]
+    void CmdDrop(GameObject obj, int typeball)
+    {
+        RpcDrop(obj, typeball);
+    }
+    [Command]
+    void CmdBaton(GameObject obj, int i)
+    {
+        RpcBaton(obj, i);
+    }
+    [Command]
+    void CmdWaves(GameObject obj)
+    {
+        RpcWaves(obj);
+    }
+
+
 
     // Update is called once per frame
     void Update () {
@@ -26,45 +91,46 @@ public class RayCastDetect : MonoBehaviour {
                     switch (hit.transform.name)
                     {
                         case "1Batton":
-                            Batonnets.gethowmany = 1;
+                            CmdBaton(hit.transform.gameObject, 1);
                             break;
                         case "2Batton":
-                            Batonnets.gethowmany = 2;
+                            CmdBaton(hit.transform.gameObject, 2);
                             break;
                         case "3Batton":
-                            Batonnets.gethowmany = 3;
+                            CmdBaton(hit.transform.gameObject, 3);
                             break;
                         case "Bouton bleu":
-                            btc.dropball(1);
-                            hit.transform.GetComponent<ButtonPressed>().press();
+                            CmdPress(hit.transform.gameObject, 2);
+                            CmdDrop(hit.transform.gameObject, 1);
                             break;
                         case "Bouton violet":
-                            btc.dropball(2);
-                            hit.transform.GetComponent<ButtonPressed>().press();
+                            CmdPress(hit.transform.gameObject, 2);
+                            CmdDrop(hit.transform.gameObject, 2);
                             break;
                         case "Bouton vert":
-                            btc.dropball(3);
-                            hit.transform.GetComponent<ButtonPressed>().press();
+                            CmdPress(hit.transform.gameObject, 2);
+                            CmdDrop(hit.transform.gameObject, 3);
                             break;
                         case "Bouton rouge":
-                            btc.dropball(4);
-                            hit.transform.GetComponent<ButtonPressed>().press();
+                            CmdPress(hit.transform.gameObject, 2);
+                            CmdDrop(hit.transform.gameObject, 4);
                             break;
                         case "BoutonRed":
-                            hit.transform.GetComponent<ButtonPressedOnce>().press();
+                            CmdPress(hit.transform.gameObject,1);
                             break;
                         case "BoutonBleu":
-                            hit.transform.GetComponent<ButtonPressedOnce>().press();
+                            //hit.transform.GetComponent<ButtonPressedOnce>().press();
+                            CmdPress(hit.transform.gameObject,1);
                             break;
                         case "BoutonVert":
-                            hit.transform.GetComponent<ButtonPressedOnce>().press();
+                            CmdPress(hit.transform.gameObject,1);// 2 = any time you want 1 = one time
                             break;
                         case "BoutonViolet":
-                            hit.transform.GetComponent<ButtonPressedOnce>().press();
+                            CmdPress(hit.transform.gameObject,1);
                             break;
                         case "BoutonGreen":
-                            hit.transform.GetComponent<ButtonPressed>().press();
-                            hit.transform.GetComponent<StartWaves>().go();
+                            CmdPress(hit.transform.gameObject, 2);
+                            CmdWaves(hit.transform.gameObject);
                             break;
                         
 

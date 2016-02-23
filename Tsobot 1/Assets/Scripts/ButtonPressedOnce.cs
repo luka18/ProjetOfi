@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
 public class ButtonPressedOnce : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class ButtonPressedOnce : MonoBehaviour
 
     public void press()
     {
+        print("kado4");
         switch (axis)
         {
             case 1:

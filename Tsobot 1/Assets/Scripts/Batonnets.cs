@@ -17,10 +17,64 @@ public class Batonnets : MonoBehaviour {
     
 
 	// Use this for initialization
-    
-	
-	// Update is called once per frame
-	void Update () {
+    public void Plays(int num)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            print("le i : " + i);
+            MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
+            render.material = blu;
+            advanced++;
+            print("add: " + advanced);
+        }
+        if (advanced == 10)//win
+        {
+            print("win");
+            howmany = 0;
+            stop = false;
+            button.SetActive(true);
+        }
+        if (advanced >= 7)// lose 
+        {
+            redplays = (10 - advanced);
+        }
+        redplays = (10 - advanced) % 4;
+        print("redplays"+redplays);
+        if (redplays == 0)
+            redplays = 1;
+        StartCoroutine(mycor2());
+
+
+
+    }
+
+    IEnumerator mycor2()
+    {
+
+        while (i < redplays)
+        {
+            yield return new WaitForSeconds(1);
+            transform.GetChild(advanced).GetComponent<MeshRenderer>().material = red;
+            advanced++;
+            i++;
+        }
+        i = 0;
+        if (advanced == 10)
+        {
+
+            for (int k = 0; k < 10; k++)
+            {
+                transform.GetChild(k).GetComponent<MeshRenderer>().material = grey;
+                advanced = 0;
+            }
+        }
+
+
+    }
+
+/*
+    // Update is called once per frame
+    void Update () {
         if(howmany !=0)
         {
             if (stop)
@@ -29,11 +83,9 @@ public class Batonnets : MonoBehaviour {
                 {
                     print("le i : " + i);
                     MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
-
                     render.material = blu;
                     advanced++;
                     print("add: "+advanced);
-                    
                 }
                 if(advanced==10)//win
                 {
@@ -41,8 +93,6 @@ public class Batonnets : MonoBehaviour {
                     howmany = 0;
                     stop = false;
                     button.SetActive(true);
-
-
                 }
                 if (advanced >= 7)// lose 
                 {
@@ -72,10 +122,7 @@ public class Batonnets : MonoBehaviour {
         }
         if(i == redplays && wait>1)
         {
-            howmany = 0;
-            wait = 0;
             i = 0;
-            stop = true;
             if(advanced ==10)
             {
                 print("lost");
@@ -89,7 +136,7 @@ public class Batonnets : MonoBehaviour {
         wait += Time.deltaTime;
 
     }
-
+    */
      public static int gethowmany
     {
         get { return howmany; }
