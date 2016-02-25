@@ -10,7 +10,6 @@ public class HeadTtrigger : MonoBehaviour {
     // Use this for initialization
     void Start () {
         boxcol = GetComponent<BoxCollider>();
-	
 	}
 
    

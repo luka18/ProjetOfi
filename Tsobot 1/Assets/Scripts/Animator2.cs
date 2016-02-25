@@ -9,7 +9,7 @@ public class Animator2 : MonoBehaviour
 
 
 
-    // Use this for initialization
+/*   // Use this for initialization
     void Start()
     {
         anim = GetComponent<Animator>();
@@ -20,7 +20,7 @@ public class Animator2 : MonoBehaviour
     void Update()
     {
 
-        if (jumping && RB2.grounded)
+        if (jumping && grounded)
         {
             anim.Play("Landing");
             jumping = false;
@@ -46,7 +46,7 @@ public class Animator2 : MonoBehaviour
                     carrying = true;
                 }
             
-        }*/
+        }
         
 
         if (Input.GetMouseButtonDown(0))
@@ -64,7 +64,8 @@ public class Animator2 : MonoBehaviour
 
 
 
-
+        
     }
-    
+    */
 }
+    

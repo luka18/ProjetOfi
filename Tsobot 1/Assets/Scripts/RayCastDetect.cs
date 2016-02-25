@@ -6,8 +6,12 @@ public class RayCastDetect : NetworkBehaviour {
     private Transform cam;
     [SyncVar]
     private NetworkIdentity objNetId;
-
+    
     public ButtonsColor btc;
+    private bool carrying = false;
+    private GameObject carriedobj;
+    private Quaternion rot;
+    private GameObject OldParent;
 
     void Start()
     {
@@ -41,6 +45,17 @@ public class RayCastDetect : NetworkBehaviour {
     {
         obj.GetComponent<StartWaves>().go();
     }
+    [ClientRpc]
+    void RpcCarry(GameObject lol)
+    {
+        print(lol.name+"2");
+        Carry(lol);
+    }
+    [ClientRpc]
+    void RpcUnCarry(GameObject obj)
+    {
+        UnCarry(obj);
+    }
     // ----------------------------------------------------- COMMAND---------------------------------------------
     [Command]
     void CmdPress(GameObject obj, int k)
@@ -73,19 +88,75 @@ public class RayCastDetect : NetworkBehaviour {
     {
         RpcWaves(obj);
     }
+    [Command]
+    void CmdCarry(GameObject mdr)
+    {
+        print(mdr.name+"1");
+        RpcCarry(mdr);
+    }
+    [Command]
+    void CmdUnCarry(GameObject objtocarry)
+    {
+        RpcUnCarry(objtocarry);
+    }
 
 
+    //-----------------NO NETWORK FROM HERE-------------------
+
+    void UnCarry(GameObject carri)
+    {
+        print(carri.name);
+        carri.GetComponent<NetworkTransform>().enabled = true;
+        carri.transform.localPosition = new Vector3(0, 2, 2f);
+        carri.transform.SetParent(OldParent.transform);
+        carri.GetComponent<Rigidbody>().isKinematic = false;
+        carri.transform.rotation = rot;
+        carrying = false;
+        carriedobj = null;
+    }
+    
+    void Carry(GameObject obj)
+    {
+        carriedobj = obj;
+        print(carriedobj.transform.position);
+        OldParent = carriedobj.transform.parent.gameObject;
+        carriedobj.GetComponent<Rigidbody>().isKinematic = true;
+        carriedobj.transform.SetParent(transform);
+        carriedobj.transform.localPosition = new Vector3(0, 3f, 0);
+        carriedobj.GetComponent<NetworkTransform>().enabled = false;
+        
+
+        carrying = true;
+        rot = carriedobj.transform.rotation;
+    }
 
     // Update is called once per frame
     void Update () {
-
+       
         if (Input.GetMouseButtonDown(0))
         {
-            Debug.Log("draw");
             RaycastHit hit;
             Debug.DrawRay(transform.position + new Vector3(0, 2.0f, 0), cam.transform.forward * 3, Color.black, 1.0f);
-            if ((Physics.Raycast(transform.position + new Vector3(0, 2.0f, 0), cam.transform.forward, out hit, 3.0f)))
+            if (carrying)
             {
+                Debug.DrawRay(transform.position , transform.forward, Color.black, 1.0f);
+                if (!Physics.Raycast(transform.position+new Vector3(0,1,0), transform.forward, out hit, 3.0f))
+                {
+
+                    CmdUnCarry(carriedobj);
+                }
+            }
+
+
+            
+            else if ((Physics.Raycast(transform.position + new Vector3(0, 2.0f, 0), cam.transform.forward, out hit, 3.0f)))
+            {
+                if(hit.transform.tag == "Portal")
+                {
+                    print(hit.transform.name+"mdr");
+                    CmdCarry(hit.transform.gameObject);
+                    
+                }
                 if (hit.transform.tag == "Button")
                 {
                     switch (hit.transform.name)
@@ -132,8 +203,6 @@ public class RayCastDetect : NetworkBehaviour {
                             CmdPress(hit.transform.gameObject, 2);
                             CmdWaves(hit.transform.gameObject);
                             break;
-                        
-
                     }
                 }
 

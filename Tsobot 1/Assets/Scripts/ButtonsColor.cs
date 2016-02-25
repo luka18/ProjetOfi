@@ -20,14 +20,14 @@ public class ButtonsColor : MonoBehaviour {
     [SerializeField] GameObject refe;
     [SerializeField] GameObject button;
 
+    
 
 
     [SerializeField] GameObject portsin;
     [SerializeField] GameObject portsout;
 
     [SerializeField] GameObject unsolved;
-
-     int currentcolor =1;
+    int currentcolor =1;
 
     private float wait;
     public void end()

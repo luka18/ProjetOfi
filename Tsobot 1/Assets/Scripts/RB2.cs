@@ -31,12 +31,12 @@ public class RB2 : MonoBehaviour
 
 
     //GROUNDCHECK
-    public static bool grounded = false;
+     bool grounded = false;
     private BoxCollider box1, box2;
     private bool cangoup = true;
     public int maxSlope = 65;
     //CROUCHING
-    public static bool Crouched = false;
+    bool Crouched = false;
     private float deltat = 0;
     private bool goinup = false;
     private float timetogoup = 0;
@@ -76,7 +76,7 @@ public class RB2 : MonoBehaviour
     {
      
         Mouselook();
-
+        print("GROND:"+grounded);
 
 
         if (Input.GetButtonDown("Jump") & grounded & (!Crouched))
