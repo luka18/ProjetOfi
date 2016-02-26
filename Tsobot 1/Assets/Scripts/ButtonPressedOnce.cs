@@ -13,7 +13,6 @@ public class ButtonPressedOnce : MonoBehaviour
 
     public void press()
     {
-        print("kado4");
         switch (axis)
         {
             case 1:
@@ -25,8 +24,6 @@ public class ButtonPressedOnce : MonoBehaviour
             case 3:
                 transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, min);
                 break;
-
-
 
         }
         transform.GetComponent<MeshRenderer>().material = OnColor;

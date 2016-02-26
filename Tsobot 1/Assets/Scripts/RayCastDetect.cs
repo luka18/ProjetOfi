@@ -6,12 +6,14 @@ public class RayCastDetect : NetworkBehaviour {
     private Transform cam;
     [SyncVar]
     private NetworkIdentity objNetId;
+
+    NetworkInstanceId  ViewID;
     
     public ButtonsColor btc;
     private bool carrying = false;
-    private GameObject carriedobj;
     private Quaternion rot;
     private GameObject OldParent;
+    private NetworkIdentity ObjCarry;
 
     void Start()
     {
@@ -25,9 +27,10 @@ public class RayCastDetect : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void RpcPressOnce(GameObject obj)
+    void RpcPressOnce(GameObject obj, int num)
     {
         obj.GetComponent<ButtonPressedOnce>().press();
+        obj.GetComponent<CallMeColors>().call(num);
     }
 
     [ClientRpc]
@@ -46,32 +49,29 @@ public class RayCastDetect : NetworkBehaviour {
         obj.GetComponent<StartWaves>().go();
     }
     [ClientRpc]
-    void RpcCarry(GameObject lol)
+    void RpcCarry(NetworkIdentity obj)
     {
-        print(lol.name+"2");
-        Carry(lol);
+        Carry(obj);
     }
     [ClientRpc]
-    void RpcUnCarry(GameObject obj)
+    void RpcUnCarry(NetworkIdentity obj)
     {
         UnCarry(obj);
     }
     // ----------------------------------------------------- COMMAND---------------------------------------------
     [Command]
-    void CmdPress(GameObject obj, int k)
+    void CmdPress(GameObject obj)
     {
         objNetId = obj.GetComponent<NetworkIdentity>();
         objNetId.AssignClientAuthority(connectionToClient);
-        switch (k)
-        {
-            case 1:
-                RpcPressOnce(obj);
-                break;
-            case 2:
-                RpcPress(obj);
-                break;
-        }
+        RpcPress(obj);
         objNetId.RemoveClientAuthority(connectionToClient);
+    }
+
+    [Command]
+    void CmdPressOnce(GameObject obj, int k)
+    {
+        RpcPressOnce(obj, k);
     }
     [Command]
     void CmdDrop(GameObject obj, int typeball)
@@ -89,50 +89,50 @@ public class RayCastDetect : NetworkBehaviour {
         RpcWaves(obj);
     }
     [Command]
-    void CmdCarry(GameObject mdr)
+    void CmdCarry(NetworkIdentity obj)
     {
-        print(mdr.name+"1");
-        RpcCarry(mdr);
+        RpcCarry(obj);
     }
     [Command]
-    void CmdUnCarry(GameObject objtocarry)
+    void CmdUnCarry(NetworkIdentity obj )
     {
-        RpcUnCarry(objtocarry);
+       
+        RpcUnCarry(obj);
     }
 
 
     //-----------------NO NETWORK FROM HERE-------------------
 
-    void UnCarry(GameObject carri)
+    void UnCarry(NetworkIdentity NetID)
     {
-        print(carri.name);
-        carri.GetComponent<NetworkTransform>().enabled = true;
-        carri.transform.localPosition = new Vector3(0, 2, 2f);
-        carri.transform.SetParent(OldParent.transform);
-        carri.GetComponent<Rigidbody>().isKinematic = false;
-        carri.transform.rotation = rot;
+        GameObject car = NetID.gameObject;
+        car.GetComponent<NetworkTransform>().enabled = true;
+        car.transform.localPosition = new Vector3(0, 2, 2f);
+        car.transform.SetParent(OldParent.transform);
+        car.GetComponent<Rigidbody>().isKinematic = false;
+        car.transform.rotation = rot;
         carrying = false;
-        carriedobj = null;
+        car.transform.tag = "Portal";
+
     }
     
-    void Carry(GameObject obj)
+    void Carry(NetworkIdentity NetID)
     {
-        carriedobj = obj;
-        print(carriedobj.transform.position);
-        OldParent = carriedobj.transform.parent.gameObject;
-        carriedobj.GetComponent<Rigidbody>().isKinematic = true;
-        carriedobj.transform.SetParent(transform);
-        carriedobj.transform.localPosition = new Vector3(0, 3f, 0);
-        carriedobj.GetComponent<NetworkTransform>().enabled = false;
         
-
+        GameObject car = NetID.gameObject;
+        car.tag = "Untagged"; 
+        OldParent = car.transform.parent.gameObject;
+        car.GetComponent<Rigidbody>().isKinematic = true;
+        car.transform.SetParent(transform);
+        car.transform.localPosition = new Vector3(0, 3f, 0);
+        car.GetComponent<NetworkTransform>().enabled = false;
         carrying = true;
-        rot = carriedobj.transform.rotation;
+        rot = car.transform.rotation;
     }
 
     // Update is called once per frame
     void Update () {
-       
+
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -143,7 +143,7 @@ public class RayCastDetect : NetworkBehaviour {
                 if (!Physics.Raycast(transform.position+new Vector3(0,1,0), transform.forward, out hit, 3.0f))
                 {
 
-                    CmdUnCarry(carriedobj);
+                    CmdUnCarry(ObjCarry);
                 }
             }
 
@@ -153,8 +153,9 @@ public class RayCastDetect : NetworkBehaviour {
             {
                 if(hit.transform.tag == "Portal")
                 {
-                    print(hit.transform.name+"mdr");
-                    CmdCarry(hit.transform.gameObject);
+                    
+                    ObjCarry = hit.transform.GetComponent<NetworkIdentity>();
+                    CmdCarry(hit.transform.GetComponent<NetworkIdentity>());
                     
                 }
                 if (hit.transform.tag == "Button")
@@ -171,36 +172,36 @@ public class RayCastDetect : NetworkBehaviour {
                             CmdBaton(hit.transform.gameObject, 3);
                             break;
                         case "Bouton bleu":
-                            CmdPress(hit.transform.gameObject, 2);
+                            CmdPress(hit.transform.gameObject);
                             CmdDrop(hit.transform.gameObject, 1);
                             break;
                         case "Bouton violet":
-                            CmdPress(hit.transform.gameObject, 2);
+                            CmdPress(hit.transform.gameObject);
                             CmdDrop(hit.transform.gameObject, 2);
                             break;
                         case "Bouton vert":
-                            CmdPress(hit.transform.gameObject, 2);
+                            CmdPress(hit.transform.gameObject);
                             CmdDrop(hit.transform.gameObject, 3);
                             break;
                         case "Bouton rouge":
-                            CmdPress(hit.transform.gameObject, 2);
+                            CmdPress(hit.transform.gameObject);
                             CmdDrop(hit.transform.gameObject, 4);
                             break;
                         case "BoutonRed":
-                            CmdPress(hit.transform.gameObject,1);
+                            CmdPressOnce(hit.transform.gameObject,3);
                             break;
                         case "BoutonBleu":
                             //hit.transform.GetComponent<ButtonPressedOnce>().press();
-                            CmdPress(hit.transform.gameObject,1);
+                            CmdPressOnce(hit.transform.gameObject,1);
                             break;
                         case "BoutonVert":
-                            CmdPress(hit.transform.gameObject,1);// 2 = any time you want 1 = one time
+                            CmdPressOnce(hit.transform.gameObject,2);// 2 = any time you want 1 = one time
                             break;
                         case "BoutonViolet":
-                            CmdPress(hit.transform.gameObject,1);
+                            CmdPressOnce(hit.transform.gameObject,0);
                             break;
                         case "BoutonGreen":
-                            CmdPress(hit.transform.gameObject, 2);
+                            CmdPress(hit.transform.gameObject);
                             CmdWaves(hit.transform.gameObject);
                             break;
                     }
