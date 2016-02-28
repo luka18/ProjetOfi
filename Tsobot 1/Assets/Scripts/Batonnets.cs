@@ -12,6 +12,8 @@ public class Batonnets : MonoBehaviour {
     private int i = 0;
     private float wait = 0;
     private bool stop = true;
+    private bool playin = false;
+    
 
     [SerializeField] GameObject button;
     
@@ -19,33 +21,40 @@ public class Batonnets : MonoBehaviour {
 	// Use this for initialization
     public void Plays(int num)
     {
-        for (int i = 0; i < num; i++)
+        if (!playin)
         {
-            print("le i : " + i);
-            MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
-            render.material = blu;
-            advanced++;
-            print("add: " + advanced);
+            playin = true;
+            for (int i = 0; i < num; i++)
+            {
+                print("le i : " + i);
+                MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
+                render.material = blu;
+                advanced++;
+                print("add: " + advanced);
+            }
+            if (advanced == 10)//win
+            {
+                print("win");
+                howmany = 0;
+                stop = false;
+                button.SetActive(true);
+            }
+            if (advanced >= 7)// lose 
+            {
+                redplays = (10 - advanced);
+            }
+            redplays = (10 - advanced) % 4;
+            print("redplays" + redplays);
+            if (redplays == 0)
+                redplays = 1;
+            StartCoroutine(mycor2());
         }
-        if (advanced == 10)//win
-        {
-            print("win");
-            howmany = 0;
-            stop = false;
-            button.SetActive(true);
-        }
-        if (advanced >= 7)// lose 
-        {
-            redplays = (10 - advanced);
-        }
-        redplays = (10 - advanced) % 4;
-        print("redplays"+redplays);
-        if (redplays == 0)
-            redplays = 1;
-        StartCoroutine(mycor2());
 
 
-
+    }
+    void Update()
+    {
+        print(playin);
     }
 
     IEnumerator mycor2()
@@ -68,7 +77,9 @@ public class Batonnets : MonoBehaviour {
                 advanced = 0;
             }
         }
-
+        print("passed");
+        playin = false;
+        print(playin);
 
     }
 

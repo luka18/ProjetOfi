@@ -7,7 +7,8 @@ public class RayCastDetect : NetworkBehaviour {
     [SyncVar]
     private NetworkIdentity objNetId;
 
-    NetworkInstanceId  ViewID;
+    [SerializeField]
+    Animator2 animate;
     
     public ButtonsColor btc;
     private bool carrying = false;
@@ -159,6 +160,7 @@ public class RayCastDetect : NetworkBehaviour {
                 }
                 if (hit.transform.tag == "Button")
                 {
+                    animate.CmdPush(transform.GetComponent<NetworkIdentity>());
                     switch (hit.transform.name)
                     {
                         case "1Batton":

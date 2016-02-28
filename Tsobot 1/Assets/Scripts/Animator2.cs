@@ -1,13 +1,71 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class Animator2 : MonoBehaviour
+public class Animator2 : NetworkBehaviour
 {
-    private Animator anim;
+    [SerializeField] private Animator anim;
     private bool jumping = false;
     private bool carrying = false;
 
 
+    //-----------------------RPC----------------------------
+    [ClientRpc]
+    void RpcPush(NetworkIdentity ID)
+    {
+        Push(ID);
+    }
+    [ClientRpc]
+    void RpcJump(NetworkIdentity ID)
+    {
+        Jump(ID);
+    }
+    [ClientRpc]
+    void RpcLand(NetworkIdentity ID)
+    {
+        Land(ID);
+    }
+
+
+
+
+
+
+
+    //-------------------------COMMAND--------------------
+    [Command]
+     public void CmdPush(NetworkIdentity ID)
+    {
+        RpcPush(ID);
+    }
+    [Command]
+    public void CmdJump(NetworkIdentity ID)
+    {
+        RpcJump(ID);
+    }
+    [Command]
+    public void CmdLand(NetworkIdentity ID)
+    {
+        RpcLand(ID);
+    }
+
+
+
+
+    void Land(NetworkIdentity ID)
+    {
+        ID.gameObject.GetComponent<Animator2>().anim.Play("Land");
+    }
+    void Jump(NetworkIdentity ID)
+    {
+        ID.gameObject.GetComponent<Animator2>().anim.Play("Jump");
+    }
+
+    void Push(NetworkIdentity ID)
+    {
+        print("SHOULD HAVE PLAYED");
+        ID.gameObject.GetComponent<Animator2>().anim.Play("Push");
+    }
 
 /*   // Use this for initialization
     void Start()

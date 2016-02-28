@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 using System.Collections.Generic;
 
 public class RB2 : MonoBehaviour
@@ -44,7 +45,14 @@ public class RB2 : MonoBehaviour
     public HeadTtrigger ht;
 
     //Animation
-    Animator anim;
+    [SerializeField]
+    Animator2 animate;
+    private bool jumping = false;
+    float TimeToLand = 0.3f;
+    private float Timebuff;
+    private bool once = true;
+
+    private NetworkIdentity MyNetID;
 
     //Shootin
     
@@ -63,6 +71,7 @@ public class RB2 : MonoBehaviour
         Robot = transform.Find("IDDLE OFI");
         print("one");
         //anim = transform.FindChild("IDDLE OFI").GetComponent<Animator>();
+        MyNetID = transform.GetComponent<NetworkIdentity>();
 
         //Head = transform.Find("Iddle4").transform.Find("joint7").transform.Find("joint4").transform.Find("mnr_120:mnr_120:neck").transform.Find("polySurface104").GetComponent<Transform>();
         print("two");
@@ -76,12 +85,34 @@ public class RB2 : MonoBehaviour
     {
      
         Mouselook();
-        print("GROND:"+grounded);
 
+        if(!grounded )
+        {
+            if (!once)
+            {
+                Timebuff = Time.time;
+                print("TOP");
+                once = true;
+            }
+        }
+        else if(once)
+        {
+            print("BUFFING");
+            if(Time.time-Timebuff >TimeToLand)
+            {
+                print("SHOULD ANIMATED LOL");
+                animate.CmdLand(MyNetID);
+                once = false;
+            }
+            
+        }
+                
 
         if (Input.GetButtonDown("Jump") & grounded & (!Crouched))
         {
             jump = JumpHeight;
+            animate.CmdJump(MyNetID);
+            
         } 
 
 
@@ -107,7 +138,6 @@ public class RB2 : MonoBehaviour
         {
             if (HeadTtrigger.goup && grounded)
             {
-                print("grounded what");
                 //transform.Translate(0, 0.25f, 0);
                 ht.UnCrouchPlease();
                 speed = 5.0f;
@@ -219,21 +249,39 @@ public class RB2 : MonoBehaviour
 
     }
 
-   
-    
 
-    void OnCollisionStay(Collision coll)
+
+
+    /*void OnCollisionStay(Collision coll)
     {
-        foreach(ContactPoint contact in coll.contacts)
+        print(coll.contacts.Length + "len");
+        foreach (ContactPoint contact in coll.contacts)
         {
+            print(contact.otherCollider.name+ "COLLIDED ME");
             if(Vector3.Angle(contact.normal,Vector3.up)<maxSlope)
             {
+                
+                if(grounded&&jumping)
+                {
+                    animate.CmdLand(MyNetID);
+                    jumping = false;
+                }
+                
                 grounded = true;
-                
-                
+            }
+            Debug.DrawRay(contact.point, contact.normal, Color.white,4);
+        }
+    }*/
+
+    void OnCollisionStay(Collision coll)
+        {
+            
+            if(Vector3.Angle(coll.contacts[0].normal,Vector3.up)<maxSlope)
+            {
+                grounded = true;
             }
         }
-    }
+
     void OnCollisionExit()
     {
         grounded = false;
