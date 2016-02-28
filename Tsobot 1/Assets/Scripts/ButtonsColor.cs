@@ -62,7 +62,6 @@ public class ButtonsColor : MonoBehaviour {
     }
     public void defcolor()
     {
-      
         switch (currentcolor)
         {
             case 1:
@@ -78,24 +77,17 @@ public class ButtonsColor : MonoBehaviour {
                 transform.GetChild(3).GetComponent<MeshRenderer>().material = reddef;
                 break;
         }
-           
     }
 
     public void NextLevel()
     {
         portsin.transform.GetChild(currentcolor -1).gameObject.SetActive(false);
         portsout.transform.GetChild(currentcolor  -1).gameObject.SetActive(false);
-        unsolved.transform.GetChild(currentcolor - 1).gameObject.SetActive(false);
         defcolor();
         currentcolor += 1;
         portsin.transform.GetChild(currentcolor-1).gameObject.SetActive(true);
         portsout.transform.GetChild(currentcolor-1).gameObject.SetActive(true);
-        print("current: " + currentcolor);
         emicolor(currentcolor);
-        unsolved.transform.GetChild(currentcolor - 1).gameObject.SetActive(true);
-
-
-
     }
 
     public void dropball(int num)

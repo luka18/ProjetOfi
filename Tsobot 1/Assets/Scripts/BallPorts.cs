@@ -4,17 +4,19 @@ using UnityEngine.Networking;
 
 public class BallPorts : NetworkBehaviour {
     [SerializeField] ButtonsColor bt;
+    [SerializeField] SpawnRedRoom Spawnred;
 
     [ClientRpc]
     private void RpcGoNext()
     {
         bt.NextLevel();
+        Spawnred.NextLevel();
     }
 
     [Command]
     private void CmdGoNext()
     {
-        bt.NextLevel();
+        RpcGoNext();
     }
 
     void OnCollisionEnter(Collision col)
@@ -22,7 +24,12 @@ public class BallPorts : NetworkBehaviour {
 
         if(col.transform.tag == "Ball")
         {
-            CmdGoNext();
+            if(isServer)
+            {
+                bt.NextLevel();
+                Spawnred.NextLevel();
+            }
+            //CmdGoNext();
         }
     }
 

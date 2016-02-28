@@ -12,7 +12,6 @@ public class RayCastDetect : NetworkBehaviour {
     public ButtonsColor btc;
     private bool carrying = false;
     private Quaternion rot;
-    private GameObject OldParent;
     private NetworkIdentity ObjCarry;
 
     void Start()
@@ -106,9 +105,10 @@ public class RayCastDetect : NetworkBehaviour {
     void UnCarry(NetworkIdentity NetID)
     {
         GameObject car = NetID.gameObject;
+        
         car.GetComponent<NetworkTransform>().enabled = true;
         car.transform.localPosition = new Vector3(0, 2, 2f);
-        car.transform.SetParent(OldParent.transform);
+        car.transform.parent = null;
         car.GetComponent<Rigidbody>().isKinematic = false;
         car.transform.rotation = rot;
         carrying = false;
@@ -121,7 +121,6 @@ public class RayCastDetect : NetworkBehaviour {
         
         GameObject car = NetID.gameObject;
         car.tag = "Untagged"; 
-        OldParent = car.transform.parent.gameObject;
         car.GetComponent<Rigidbody>().isKinematic = true;
         car.transform.SetParent(transform);
         car.transform.localPosition = new Vector3(0, 3f, 0);
@@ -178,6 +177,7 @@ public class RayCastDetect : NetworkBehaviour {
                         case "Bouton violet":
                             CmdPress(hit.transform.gameObject);
                             CmdDrop(hit.transform.gameObject, 2);
+                            hit.transform.GetComponent<SpawnRedRoom>().Purple();
                             break;
                         case "Bouton vert":
                             CmdPress(hit.transform.gameObject);
