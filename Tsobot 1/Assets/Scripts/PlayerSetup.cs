@@ -11,6 +11,7 @@ public class PlayerSetup : NetworkBehaviour {
     void Start()
     {
         
+
         if(!isLocalPlayer)
         {
             for (int i =0; i <componentsToDisable.Length; i++)
@@ -20,11 +21,12 @@ public class PlayerSetup : NetworkBehaviour {
                 componentsToDisable[i].enabled = false;
             }
             
-            
-            
+
+
         }
         else
         {
+            transform.GetChild(2).gameObject.SetActive(false);
             print("inst local player");
             sceneCamera = Camera.main;
             print(sceneCamera);

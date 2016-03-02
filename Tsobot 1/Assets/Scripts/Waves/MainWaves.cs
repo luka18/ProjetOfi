@@ -27,6 +27,7 @@ public class MainWaves : MonoBehaviour {
         yield return new WaitForSeconds(8);
         mur.SetActive(false);
         transform.GetChild(numbofchild ).gameObject.SetActive(false);
+        timebuffer = 0;
     }
     // Update is called once per frame
     void Update () {

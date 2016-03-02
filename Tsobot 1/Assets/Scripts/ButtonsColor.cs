@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class ButtonsColor : MonoBehaviour {
+public class ButtonsColor : NetworkBehaviour {
 
     [SerializeField] private Material bludef;
     [SerializeField] private Material viodef;
@@ -25,11 +26,20 @@ public class ButtonsColor : MonoBehaviour {
 
     [SerializeField] GameObject portsin;
     [SerializeField] GameObject portsout;
+    [SerializeField]
+    GameObject WallJump;
 
     [SerializeField] GameObject unsolved;
-    int currentcolor =1;
+    [SyncVar] int currentcolor =1;
 
     private float wait;
+
+
+
+
+
+
+
     public void end()
     {
         button.SetActive(true);
@@ -81,6 +91,10 @@ public class ButtonsColor : MonoBehaviour {
 
     public void NextLevel()
     {
+        if(currentcolor == 1)
+        {
+            WallJump.SetActive(true);
+        }
         portsin.transform.GetChild(currentcolor -1).gameObject.SetActive(false);
         portsout.transform.GetChild(currentcolor  -1).gameObject.SetActive(false);
         defcolor();

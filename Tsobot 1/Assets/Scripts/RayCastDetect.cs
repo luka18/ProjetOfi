@@ -14,10 +14,12 @@ public class RayCastDetect : NetworkBehaviour {
     private bool carrying = false;
     private Quaternion rot;
     private NetworkIdentity ObjCarry;
+    private RB2 MyRB2;
 
     void Start()
     {
         cam = transform.FindChild("Camera");
+        MyRB2 = transform.GetComponent<RB2>();
     }
     //------------------------------------------RPC-----------------------------------------
     [ClientRpc]
@@ -27,8 +29,9 @@ public class RayCastDetect : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void RpcPressOnce(GameObject obj, int num)
+    void RpcPressOnce(NetworkIdentity ID, int num)
     {
+        GameObject obj = ID.gameObject;
         obj.GetComponent<ButtonPressedOnce>().press();
         obj.GetComponent<CallMeColors>().call(num);
     }
@@ -69,9 +72,9 @@ public class RayCastDetect : NetworkBehaviour {
     }
 
     [Command]
-    void CmdPressOnce(GameObject obj, int k)
+    void CmdPressOnce(NetworkIdentity ID, int k)
     {
-        RpcPressOnce(obj, k);
+        RpcPressOnce(ID, k);
     }
     [Command]
     void CmdDrop(GameObject obj, int typeball)
@@ -144,6 +147,7 @@ public class RayCastDetect : NetworkBehaviour {
                 {
 
                     CmdUnCarry(ObjCarry);
+                    MyRB2.Carry = false;
                 }
             }
 
@@ -153,9 +157,10 @@ public class RayCastDetect : NetworkBehaviour {
             {
                 if(hit.transform.tag == "Portal")
                 {
-                    
+                    animate.CmdCarry(transform.GetComponent<NetworkIdentity>());
                     ObjCarry = hit.transform.GetComponent<NetworkIdentity>();
                     CmdCarry(hit.transform.GetComponent<NetworkIdentity>());
+                    MyRB2.Carry = true;
                     
                 }
                 if (hit.transform.tag == "Button")
@@ -179,7 +184,6 @@ public class RayCastDetect : NetworkBehaviour {
                         case "Bouton violet":
                             CmdPress(hit.transform.gameObject);
                             CmdDrop(hit.transform.gameObject, 2);
-                            hit.transform.GetComponent<SpawnRedRoom>().Purple();
                             break;
                         case "Bouton vert":
                             CmdPress(hit.transform.gameObject);
@@ -190,17 +194,21 @@ public class RayCastDetect : NetworkBehaviour {
                             CmdDrop(hit.transform.gameObject, 4);
                             break;
                         case "BoutonRed":
-                            CmdPressOnce(hit.transform.gameObject,3);
+                            //CmdPressOnce(hit.transform.gameObject,3);
+                            CmdPressOnce(hit.transform.GetComponent<NetworkIdentity>(), 3);
                             break;
                         case "BoutonBleu":
                             //hit.transform.GetComponent<ButtonPressedOnce>().press();
-                            CmdPressOnce(hit.transform.gameObject,1);
+                            //CmdPressOnce(hit.transform.gameObject,1);
+                            CmdPressOnce(hit.transform.GetComponent<NetworkIdentity>(), 1);
                             break;
                         case "BoutonVert":
-                            CmdPressOnce(hit.transform.gameObject,2);// 2 = any time you want 1 = one time
+                            //CmdPressOnce(hit.transform.gameObject,2);// 2 = any time you want 1 = one time
+                            CmdPressOnce(hit.transform.GetComponent<NetworkIdentity>(), 2);
                             break;
                         case "BoutonViolet":
-                            CmdPressOnce(hit.transform.gameObject,0);
+                            //CmdPressOnce(hit.transform.gameObject,0);
+                            CmdPressOnce(hit.transform.GetComponent<NetworkIdentity>(), 0);
                             break;
                         case "BoutonGreen":
                             CmdPress(hit.transform.gameObject);

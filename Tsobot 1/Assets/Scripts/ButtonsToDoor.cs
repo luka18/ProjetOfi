@@ -32,7 +32,7 @@ public class ButtonsToDoor : MonoBehaviour {
             }
 
             color.transform.GetChild(color.transform.childCount - 1).gameObject.SetActive(true);
-            //if(ArrayColors[0]&&ArrayColors[1]&&ArrayColors[2]&&ArrayColors[3])
+            if(ArrayColors[0]&&ArrayColors[1]&&ArrayColors[2]&&ArrayColors[3])
                 TheDoor.Open();
         }
        

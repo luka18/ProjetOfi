@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Networking;
 
-public class Batonnets : MonoBehaviour {
+public class Batonnets : NetworkBehaviour {
 
     private static int howmany;
     private int advanced = 0;
@@ -13,48 +14,64 @@ public class Batonnets : MonoBehaviour {
     private float wait = 0;
     private bool stop = true;
     private bool playin = false;
-    
+    private bool TotalStop = false;
 
     [SerializeField] GameObject button;
+
+    [Command]
+    void CmdActivateButton()
+    {
+        RpcActivate();
+    }
     
+
+    [ClientRpc]
+    void RpcActivate()
+    {
+        button.SetActive(true);
+    }
+
 
 	// Use this for initialization
     public void Plays(int num)
     {
-        if (!playin)
+        if (!TotalStop)
         {
-            playin = true;
-            for (int i = 0; i < num; i++)
+            if (!playin)
             {
-                print("le i : " + i);
-                MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
-                render.material = blu;
-                advanced++;
-                print("add: " + advanced);
+                playin = true;
+                for (int i = 0; i < num; i++)
+                {
+                    print("le i : " + i);
+                    MeshRenderer render = transform.GetChild(advanced).GetComponent<MeshRenderer>();
+                    render.material = blu;
+                    advanced++;
+                    print("add: " + advanced);
+                }
+                if (advanced == 10)//win
+                {
+                    print("win");
+                    howmany = 0;
+                    stop = false;
+                    button.SetActive(true);
+                    CmdActivateButton();
+                    TotalStop = true;
+                }
+                if (advanced >= 7)// lose 
+                {
+                    redplays = (10 - advanced);
+                }
+                redplays = (10 - advanced) % 4;
+                print("redplays" + redplays);
+                if (redplays == 0)
+                    redplays = 1;
+                if (!TotalStop)
+                {
+                    StartCoroutine(mycor2());
+                }
             }
-            if (advanced == 10)//win
-            {
-                print("win");
-                howmany = 0;
-                stop = false;
-                button.SetActive(true);
-            }
-            if (advanced >= 7)// lose 
-            {
-                redplays = (10 - advanced);
-            }
-            redplays = (10 - advanced) % 4;
-            print("redplays" + redplays);
-            if (redplays == 0)
-                redplays = 1;
-            StartCoroutine(mycor2());
+
         }
-
-
-    }
-    void Update()
-    {
-        print(playin);
     }
 
     IEnumerator mycor2()

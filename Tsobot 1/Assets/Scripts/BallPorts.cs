@@ -10,13 +10,14 @@ public class BallPorts : NetworkBehaviour {
     private void RpcGoNext()
     {
         bt.NextLevel();
-        Spawnred.NextLevel();
+        print("nextLevel");
     }
 
     [Command]
     private void CmdGoNext()
     {
         RpcGoNext();
+        print("cmdggonext");
     }
 
     void OnCollisionEnter(Collision col)
@@ -24,9 +25,11 @@ public class BallPorts : NetworkBehaviour {
 
         if(col.transform.tag == "Ball")
         {
+            print("IN THE PORTAL");
             if(isServer)
             {
-                bt.NextLevel();
+                print("InServer");
+                CmdGoNext();
                 Spawnred.NextLevel();
             }
             //CmdGoNext();

@@ -25,6 +25,11 @@ public class Animator2 : NetworkBehaviour
     {
         Land(ID);
     }
+    [ClientRpc]
+    void RpcCarry(NetworkIdentity ID)
+    {
+        Carry(ID);
+    }
 
 
 
@@ -48,6 +53,11 @@ public class Animator2 : NetworkBehaviour
     {
         RpcLand(ID);
     }
+    [Command]
+    public void CmdCarry(NetworkIdentity ID)
+    {
+        RpcCarry(ID);
+    }
 
 
 
@@ -63,8 +73,12 @@ public class Animator2 : NetworkBehaviour
 
     void Push(NetworkIdentity ID)
     {
-        print("SHOULD HAVE PLAYED");
         ID.gameObject.GetComponent<Animator2>().anim.Play("Push");
+    }
+    void Carry(NetworkIdentity ID)
+    {
+        print("playedcarry");
+        ID.gameObject.GetComponent<Animator2>().anim.Play("Carry");
     }
 
 /*   // Use this for initialization

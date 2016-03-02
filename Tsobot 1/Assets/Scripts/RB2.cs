@@ -16,7 +16,7 @@ public class RB2 : MonoBehaviour
     private bool slowdown = false;
     private Vector3 forcetoadd;
     private Vector3 desiredmove;
-    public static bool inair = false;
+    
     public int aircontrol = 2;
     
     
@@ -29,13 +29,15 @@ public class RB2 : MonoBehaviour
     private Transform Head;
     private Transform Robot;
     private bool ff = false;
-
+    
 
     //GROUNDCHECK
      bool grounded = false;
     private BoxCollider box1, box2;
     private bool cangoup = true;
     public int maxSlope = 65;
+    private bool cancontrol = true;
+
     //CROUCHING
     bool Crouched = false;
     private float deltat = 0;
@@ -51,6 +53,7 @@ public class RB2 : MonoBehaviour
     float TimeToLand = 0.3f;
     private float Timebuff;
     private bool once = true;
+    private bool carry;
 
     private NetworkIdentity MyNetID;
 
@@ -61,7 +64,12 @@ public class RB2 : MonoBehaviour
 
 
     private BoxCollider Mycollider;
-   
+    public bool Carry
+    {
+        get { return carry; }
+        set { carry = value; }
+    }
+
     // Use this for initialization
     void Start()
     {
@@ -80,10 +88,21 @@ public class RB2 : MonoBehaviour
 
     }
 
+    public bool GetControl()
+    {
+        return cancontrol;
+    }
+
+    public void SetControl(bool cani)
+    {
+        cancontrol = cani;
+    }
+
     // Update is called once per frame
     void Update()
     {
-     
+
+        print(cancontrol+"cani");
         Mouselook();
 
         if(!grounded )
@@ -101,8 +120,12 @@ public class RB2 : MonoBehaviour
             if(Time.time-Timebuff >TimeToLand)
             {
                 print("SHOULD ANIMATED LOL");
-                animate.CmdLand(MyNetID);
-                once = false;
+                if (!carry)
+                {
+                    animate.CmdLand(MyNetID);
+                }
+                    once = false;
+                
             }
             
         }
@@ -110,8 +133,12 @@ public class RB2 : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") & grounded & (!Crouched))
         {
+            
             jump = JumpHeight;
-            animate.CmdJump(MyNetID);
+            if (!carry)
+            {
+                animate.CmdJump(MyNetID);
+            }
             
         } 
 
@@ -175,16 +202,20 @@ public class RB2 : MonoBehaviour
       
         if (Input.GetButton("Sprint"))
         {
-            if(grounded & vertical > 0 & horizontal == 0& !Crouched)
+            if (grounded & vertical > 0 & horizontal == 0 & !Crouched)
+            {
                 speed = sprintspeed;
+                cancontrol = false;
+            }
            
           
         }
         if (Input.GetButtonUp("Sprint") || slowdown) 
         {
             
-                speed = 5.0f;
-                slowdown = false;
+            speed = 5.0f;
+            slowdown = false;
+            cancontrol = true;
            
         }
 
@@ -206,7 +237,7 @@ public class RB2 : MonoBehaviour
 
         }
 
-        else if (speed == 5.0f)
+        else if (cancontrol)
         {
             desiredmove = (transform.forward * vertical + transform.right * horizontal) * speed;
             desiredmove = Vector3.ClampMagnitude(desiredmove, speed);
@@ -278,7 +309,8 @@ public class RB2 : MonoBehaviour
             
             if(Vector3.Angle(coll.contacts[0].normal,Vector3.up)<maxSlope)
             {
-                grounded = true;
+                if(coll.transform.tag!= "NoGrounded")
+                    grounded = true;
             }
         }
 

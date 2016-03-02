@@ -5,11 +5,6 @@ public class AddForceX : MonoBehaviour {
 
     public int force = 0;
 
-    void Update()
-    {
-        Debug.DrawRay(transform.position, (transform.up)  * force, Color.blue, 4.0f);
-    }
-
 
     void OnCollisionEnter(Collision col)
     {
