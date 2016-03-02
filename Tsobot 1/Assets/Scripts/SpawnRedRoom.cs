@@ -7,6 +7,8 @@ public class SpawnRedRoom : NetworkBehaviour {
     [SerializeField] GameObject PrefCar;
     [SerializeField] GameObject Jumper;
     [SerializeField] GameObject Balance;
+    [SerializeField]
+    ButtonsColor bt;
     private int CurrentLvl = 1;
 
     List<GameObject> LvlObj = new List<GameObject>();
@@ -17,6 +19,7 @@ public class SpawnRedRoom : NetworkBehaviour {
         GameObject obj = (GameObject)Instantiate(Jumper, pos, Quaternion.Euler(0, Rot, 0));
         LvlObj.Add(obj);
         NetworkServer.Spawn(obj);
+        
     }
 
     void CmdBalance(Vector3 pos, int Rot)
@@ -24,6 +27,7 @@ public class SpawnRedRoom : NetworkBehaviour {
         GameObject obj = (GameObject)Instantiate(Balance, pos, Quaternion.Euler(0, Rot, 0));
         LvlObj.Add(obj);
         NetworkServer.Spawn(obj);
+        bt.SeriRef(obj.transform.GetChild(7).gameObject);
     }
 
  
@@ -38,7 +42,12 @@ public class SpawnRedRoom : NetworkBehaviour {
     {
         if(isServer)
         {
-            Blu();
+            //Blu();
+            NextLevel();
+            NextLevel();
+            NextLevel();
+           
+
         }
     }
 
@@ -69,14 +78,15 @@ public class SpawnRedRoom : NetworkBehaviour {
 
     public void Green()
     {
+      
         CmdCar((new Vector3(16, 12, 41.5f)), 270);
         CmdCar((new Vector3(10, 12, 41.5f)), 0);
         CmdCar((new Vector3(4, 12, 41.5f)), 270);
         CmdCar((new Vector3(4, 12, 47.5f)), 270);
         CmdCar((new Vector3(10, 12, 53.5f)), 270);
-        CmdCar((new Vector3(4, 12, 53.5f)), 270);
         CmdCar((new Vector3(16, 12, 53.5f)), 270);
         CmdJumper((new Vector3(16, 12, 47.5f)), 0);
+        
     }
 
     public void Red()
@@ -86,26 +96,37 @@ public class SpawnRedRoom : NetworkBehaviour {
         CmdJumper((new Vector3(6, 12, 51.5f)), 0);
         CmdJumper((new Vector3(6, 12, 43.5f)), 0);
         CmdBalance((new Vector3(-7, 12.68f, 47.5f)), 0);
+        
     }
 
     public void NextLevel()
     {
-        DestroyLevel();
-        CurrentLvl++;
-        print("AFTER DESTROY");
-        switch(CurrentLvl)
+        if (isServer)
         {
-            case 2:
-                Purple();
-                break;
-            case 3:
-                Green();
-                break;
-            case 4:
-                Red();
-                break;
+
+            CurrentLvl++;
+            if (CurrentLvl < 5)
+            {
+                DestroyLevel();
+                print("AFTER DESTROY");
+                switch (CurrentLvl)
+                {
+                    case 2:
+                        Purple();
+                        break;
+                    case 3:
+                        Green();
+                        break;
+                    case 4:
+                        Red();
+                        break;
+                }
+            }
         }
+     
     }
 
-
 }
+
+
+

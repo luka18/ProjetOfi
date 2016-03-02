@@ -127,11 +127,23 @@ public class RayCastDetect : NetworkBehaviour {
         car.tag = "Untagged"; 
         car.GetComponent<Rigidbody>().isKinematic = true;
         car.transform.SetParent(transform);
-        car.transform.localPosition = new Vector3(0, 3f, 0);
         car.GetComponent<NetworkTransform>().enabled = false;
         carrying = true;
         rot = car.transform.rotation;
+        StartCoroutine(mycor2(car,1));
     }
+    //Animation Carry
+    IEnumerator mycor2(GameObject car, float i)
+    {
+
+        yield return new WaitForSeconds(0.2f);
+        car.transform.localPosition = new Vector3(0,3, 0);
+    }
+
+
+
+
+
 
     // Update is called once per frame
     void Update () {
@@ -148,6 +160,7 @@ public class RayCastDetect : NetworkBehaviour {
 
                     CmdUnCarry(ObjCarry);
                     MyRB2.Carry = false;
+                    animate.CmdUnCarry(transform.GetComponent<NetworkIdentity>());
                 }
             }
 

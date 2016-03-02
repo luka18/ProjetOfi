@@ -30,6 +30,21 @@ public class Animator2 : NetworkBehaviour
     {
         Carry(ID);
     }
+    [ClientRpc]
+    void RpcUnCarry(NetworkIdentity ID)
+    {
+        UnCarry(ID);
+    }
+    [ClientRpc]
+    void RpcCrouch(NetworkIdentity ID)
+    {
+        Crouch(ID);
+    }
+    [ClientRpc]
+    void RpcUnCrouch(NetworkIdentity ID)
+    {
+        UnCrouch(ID);
+    }
 
 
 
@@ -58,6 +73,21 @@ public class Animator2 : NetworkBehaviour
     {
         RpcCarry(ID);
     }
+    [Command]
+    public void CmdUnCarry(NetworkIdentity ID)
+    {
+        RpcUnCarry(ID);
+    }
+    [Command]
+    public void CmdCrouch(NetworkIdentity ID)
+    {
+        RpcCrouch(ID);
+    }
+    [Command]
+    public void CmdUnCrouch(NetworkIdentity ID)
+    {
+        RpcUnCrouch(ID);
+    }
 
 
 
@@ -77,67 +107,78 @@ public class Animator2 : NetworkBehaviour
     }
     void Carry(NetworkIdentity ID)
     {
-        print("playedcarry");
         ID.gameObject.GetComponent<Animator2>().anim.Play("Carry");
     }
-
-/*   // Use this for initialization
-    void Start()
+    void UnCarry(NetworkIdentity ID)
     {
-        anim = GetComponent<Animator>();
-
+        ID.gameObject.GetComponent<Animator2>().anim.Play("UnCarry");
+    }
+    void Crouch(NetworkIdentity ID)
+    {
+        ID.gameObject.GetComponent<Animator2>().anim.Play("Crouch");
+    }
+    void UnCrouch(NetworkIdentity ID)
+    {
+        ID.gameObject.GetComponent<Animator2>().anim.Play("UnCrouch");
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-        if (jumping && grounded)
+    /*   // Use this for initialization
+        void Start()
         {
-            anim.Play("Landing");
-            jumping = false;
+            anim = GetComponent<Animator>();
+
         }
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            anim.Play("Jump");
-            jumping = true;
-        }
-        
-        /*if (Input.GetMouseButtonDown(1))
+        // Update is called once per frame
+        void Update()
         {
 
-                if (carrying)
-                {
-                    anim.Play("Throwit");
-                    carrying = false;
-                }
-                else
-                {
-                    anim.Play("Gotit");
-                    carrying = true;
-                }
-            
-        }
-        
+            if (jumping && grounded)
+            {
+                anim.Play("Landing");
+                jumping = false;
+            }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            anim.Play("Push");
-        }
-        if (Input.GetButtonDown("Crouch"))
-        {
-            anim.Play("Crouching");
-        }
-        if (Input.GetButtonUp("Crouch"))
-        {
-            anim.Play("Getup");
-        }
+            if (Input.GetButtonDown("Jump"))
+            {
+                anim.Play("Jump");
+                jumping = true;
+            }
+
+            /*if (Input.GetMouseButtonDown(1))
+            {
+
+                    if (carrying)
+                    {
+                        anim.Play("Throwit");
+                        carrying = false;
+                    }
+                    else
+                    {
+                        anim.Play("Gotit");
+                        carrying = true;
+                    }
+
+            }
+
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                anim.Play("Push");
+            }
+            if (Input.GetButtonDown("Crouch"))
+            {
+                anim.Play("Crouching");
+            }
+            if (Input.GetButtonUp("Crouch"))
+            {
+                anim.Play("Getup");
+            }
 
 
 
-        
-    }
-    */
+
+        }
+        */
 }
     

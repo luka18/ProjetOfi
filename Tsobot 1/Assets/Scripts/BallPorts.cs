@@ -26,12 +26,10 @@ public class BallPorts : NetworkBehaviour {
         if(col.transform.tag == "Ball")
         {
             print("IN THE PORTAL");
-            if(isServer)
-            {
-                print("InServer");
-                CmdGoNext();
-                Spawnred.NextLevel();
-            }
+            print(col.transform.name);
+            print("InServer");
+            CmdGoNext();
+            Spawnred.NextLevel();
             //CmdGoNext();
         }
     }

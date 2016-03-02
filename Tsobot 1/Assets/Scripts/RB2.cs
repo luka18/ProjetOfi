@@ -43,6 +43,7 @@ public class RB2 : MonoBehaviour
     private float deltat = 0;
     private bool goinup = false;
     private float timetogoup = 0;
+    private bool GoOnce = true;
     //scripts
     public HeadTtrigger ht;
 
@@ -120,7 +121,7 @@ public class RB2 : MonoBehaviour
             if(Time.time-Timebuff >TimeToLand)
             {
                 print("SHOULD ANIMATED LOL");
-                if (!carry)
+                if (!carry&& !Crouched)
                 {
                     animate.CmdLand(MyNetID);
                 }
@@ -129,7 +130,7 @@ public class RB2 : MonoBehaviour
             }
             
         }
-                
+       
 
         if (Input.GetButtonDown("Jump") & grounded & (!Crouched))
         {
@@ -143,11 +144,13 @@ public class RB2 : MonoBehaviour
         } 
 
 
-        if (Input.GetButton("Crouch"))
+
+        if (Input.GetButtonDown("Crouch"))
         {
 
-
+            animate.CmdCrouch(MyNetID);
             print("crouched");
+
             Crouched = true;
             Mycollider.size = new Vector3(1, 2.0f, 1);
             ht.CrouchPlease();
@@ -165,10 +168,11 @@ public class RB2 : MonoBehaviour
         {
             if (HeadTtrigger.goup && grounded)
             {
-                //transform.Translate(0, 0.25f, 0);
+                transform.Translate(0, 0.25f, 0);
                 ht.UnCrouchPlease();
+                animate.CmdUnCrouch(MyNetID);
                 speed = 5.0f;
-                //Mycollider.size = new Vector3(1, 2.5f, 1);
+                Mycollider.size = new Vector3(1, 2.5f, 1);
                 
                 Crouched = false;
                 goinup = true;
@@ -176,7 +180,7 @@ public class RB2 : MonoBehaviour
             }
         }
 
-        if(goinup)
+        /*if(goinup)
         {
             deltat += Time.deltaTime*1.2f;
             
@@ -190,7 +194,7 @@ public class RB2 : MonoBehaviour
             }
                 
 
-        }
+        }*/
 
 
 

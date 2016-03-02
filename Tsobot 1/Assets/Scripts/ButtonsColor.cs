@@ -18,12 +18,12 @@ public class ButtonsColor : NetworkBehaviour {
     [SerializeField] GameObject greenball;
     [SerializeField] GameObject redball;
 
-    [SerializeField] GameObject refe;
     [SerializeField] GameObject button;
 
-    
 
-
+    GameObject refe;
+    [SerializeField]
+    GameObject greenteleport;
     [SerializeField] GameObject portsin;
     [SerializeField] GameObject portsout;
     [SerializeField]
@@ -33,16 +33,21 @@ public class ButtonsColor : NetworkBehaviour {
     [SyncVar] int currentcolor =1;
 
     private float wait;
-
-
-
-
-
-
-
-    public void end()
+    void Start()//to test
     {
-        button.SetActive(true);
+        NextLevel();
+        NextLevel();
+        NextLevel();
+        
+    }
+
+
+
+
+
+    public void Update()
+    {
+        print(currentcolor);
     }
 
 
@@ -95,13 +100,42 @@ public class ButtonsColor : NetworkBehaviour {
         {
             WallJump.SetActive(true);
         }
-        portsin.transform.GetChild(currentcolor -1).gameObject.SetActive(false);
-        portsout.transform.GetChild(currentcolor  -1).gameObject.SetActive(false);
-        defcolor();
-        currentcolor += 1;
-        portsin.transform.GetChild(currentcolor-1).gameObject.SetActive(true);
-        portsout.transform.GetChild(currentcolor-1).gameObject.SetActive(true);
-        emicolor(currentcolor);
+        else
+        {
+            WallJump.SetActive(false);
+        }
+        if(currentcolor == 2)
+        {
+            greenteleport.SetActive(true);
+        }
+        else
+        {
+            greenteleport.SetActive(false);
+        }
+        if (currentcolor < 4)
+        {
+            
+
+            print("IN NEXT LVL" + currentcolor);
+            portsin.transform.GetChild(currentcolor - 1).gameObject.SetActive(false);
+            portsout.transform.GetChild(currentcolor - 1).gameObject.SetActive(false);
+            defcolor();
+            currentcolor += 1;
+            portsin.transform.GetChild(currentcolor - 1).gameObject.SetActive(true);
+            portsout.transform.GetChild(currentcolor - 1).gameObject.SetActive(true);
+            emicolor(currentcolor);
+        }
+        else
+        {
+            print("VIIIIIIIIIIIIIIIIIIIIIIIIIIIICTOIRE");
+            button.SetActive(true);
+        }
+       
+    }
+
+    public void SeriRef(GameObject spawnnn)
+    {
+        refe = spawnnn;
     }
 
     public void dropball(int num)
@@ -116,13 +150,13 @@ public class ButtonsColor : NetworkBehaviour {
                         Instantiate(bluball, new Vector3(10, 19, 47.5f), new Quaternion());
                         break;
                     case 2:
-                        ((GameObject) Instantiate(purpleball, new Vector3(20, 18.5f, 33.5f), new Quaternion())).GetComponent<Rigidbody>().AddForce(0, 0, 15, ForceMode.VelocityChange);
+                        ((GameObject)Instantiate(purpleball, new Vector3(20, 18.5f, 33.5f), new Quaternion())).GetComponent<Rigidbody>().AddForce(0, 0, 15, ForceMode.VelocityChange);
                         break;
                     case 3:
                         Instantiate(greenball, new Vector3(22.6f, 19.5f, 58), new Quaternion());
                         break;
                     case 4:
-                        ((GameObject)Instantiate(redball, refe.transform.position, new Quaternion())).GetComponent<Rigidbody>().AddForce(7, 0, 0, ForceMode.VelocityChange);
+                        ((GameObject)(Instantiate(redball, refe.transform.position, new Quaternion()))).GetComponent<Rigidbody>().AddForce(7, 0, 0, ForceMode.VelocityChange);
                         break;
 
                 }
